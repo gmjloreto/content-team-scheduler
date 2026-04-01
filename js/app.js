@@ -12,7 +12,8 @@ const eventos = {
 const LIMITES = {
   Editor: 1,
   Fotografia: 2,
-  Storymaker: 1
+  Storymaker: 1,
+  Apoio: 4
 };
 
 const app = document.getElementById("app");
@@ -57,6 +58,7 @@ for (let dia in eventos) {
         <option value="Fotografia">Fotografia 📸</option>
         <option value="Editor">Editor 💻</option>
         <option value="Storymaker">Storymaker 📱</option>
+        <option value="Apoio">Apoio 🤝</option>
       </select>
       <button class="confirmar">Confirmar ✔️</button>
     `;

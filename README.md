@@ -97,9 +97,3 @@ Se tiver ideias ou melhorias:
 👉 https://gmjloreto.github.io/content-team-scheduler/
 
 ---
-
-## 🔥🔥🔥
-
-**Church media team going digital 😎🔥**
-**Organização nível profissional 📈✨**
-**Woww, this is amazing!! 🚀📸**

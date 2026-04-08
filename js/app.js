@@ -1,12 +1,7 @@
 import { supabase } from "../config/supabase.js";
 
 const eventos = {
-  Terça: ["Missa 19h", "Ofício das trevas 20h"],
-  Quarta: ["Missa 19h"],
-  Quinta: ["Ceia do Senhor 20h", "Adoração eucarística 23:45"],
-  Sexta: ["Celebração da paixão 15h", "Procissão e encenação 17h"],
-  Sábado: ["Vigília pascal 20h"],
-  Domingo: ["Missa 11h"]
+  Sábado: ["Vigília Divina Misericórdia 23h as 6hrs"]
 };
 
 const LIMITES = {

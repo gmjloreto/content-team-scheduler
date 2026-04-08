@@ -81,6 +81,12 @@ Pronto! Você já está escalado ✅
 
 ---
 
+## 🔗 Acesse o sistema
+
+👉 https://gmjloreto.github.io/content-team-scheduler/
+
+---
+
 ## 🙌 Contribuição
 
 Esse projeto foi desenvolvido para ajudar na organização da equipe de mídias da igreja.
@@ -90,10 +96,3 @@ Se tiver ideias ou melhorias:
 * fala com a equipe
 * ou contribui diretamente no código 💻
 
----
-
-## 🔗 Acesse o sistema
-
-👉 https://gmjloreto.github.io/content-team-scheduler/
-
----

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Escala GMJ - Editor</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="admin">
+
+<!-- LOGIN -->
+<div id="login">
+  <h2>Login 🔐</h2>
+  <input id="email" placeholder="Email">
+  <input id="senha" type="password" placeholder="Senha">
+  <button id="btnLogin">Entrar</button>
+</div>
+
+<!-- PAINEL (ESCONDIDO) -->
+<div id="painel" style="display:none;">
+  <h2>Painel de Eventos ⚙️</h2>
+
+  <input type="tell" id="dia" placeholder="DD/MM/AAAA"  maxlength="10">
+  <input id="evento" placeholder="Evento">
+  <button id="btnCriar">Criar Evento</button>
+
+  <div id="lista"></div>
+  <button id="logout">Logout</button>
+</div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

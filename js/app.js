@@ -1,9 +1,5 @@
 import { supabase } from "../config/supabase.js";
 
-const eventos = {
-  Sábado: ["Vigília Divina Misericórdia 23h as 6hrs"]
-};
-
 const LIMITES = {
   Editor: 1,
   Fotografia: 2,
@@ -13,111 +9,96 @@ const LIMITES = {
 
 const app = document.getElementById("app");
 
+async function carregarEventos() {
+  const { data } = await supabase.from("eventos").select("*");
 
-const listas = [];
+  const agrupado = {};
 
-function registrarLista(el, dia, evento) {
-  listas.push({ el, dia, evento });
+  data.forEach(e => {
+    if (!agrupado[e.dia]) agrupado[e.dia] = [];
+    agrupado[e.dia].push(e.evento);
+  });
+
+  render(agrupado);
 }
 
-async function atualizarTudo() {
-  for (let item of listas) {
-    await carregar(item.el, item.dia, item.evento);
-  }
-}
+function render(eventos) {
+  app.innerHTML = "";
 
+  for (let dia in eventos) {
+    const div = document.createElement("div");
+    div.className = "day";
+    div.innerHTML = `<h3>${dia}</h3>`;
 
-for (let dia in eventos) {
-  const div = document.createElement("div");
-  div.className = "day";
+    eventos[dia].forEach(evento => {
+      const container = document.createElement("div");
 
-  div.innerHTML = `<h3>${dia}</h3>`;
+      const titulo = document.createElement("button");
+      titulo.innerText = evento;
 
-  eventos[dia].forEach(evento => {
-    const container = document.createElement("div");
+      const lista = document.createElement("div");
+      lista.className = "lista";
 
-    const titulo = document.createElement("button");
-    titulo.innerText = evento;
+      const form = document.createElement("div");
+      form.className = "form";
 
-    const lista = document.createElement("div");
-    lista.className = "lista";
+      form.innerHTML = `
+        <input type="text" placeholder="Seu nome" class="nome" />
+        <select class="funcao">
+          <option value="Fotografia">Fotografia 📸</option>
+          <option value="Editor">Editor 💻</option>
+          <option value="Storymaker">Storymaker 📱</option>
+          <option value="Apoio">Apoio 🤝</option>
+        </select>
+        <button class="confirmar">Confirmar ✔️</button>
+      `;
 
-    registrarLista(lista, dia, evento);
+      titulo.onclick = () => form.classList.toggle("show");
 
-    const form = document.createElement("div");
-    form.className = "form";
+      form.querySelector(".confirmar").onclick = async (e) => {
+        e.preventDefault();
 
-    form.innerHTML = `
-      <input type="text" placeholder="Seu nome" class="nome" />
-      <select class="funcao">
-        <option value="Fotografia">Fotografia 📸</option>
-        <option value="Editor">Editor 💻</option>
-        <option value="Storymaker">Storymaker 📱</option>
-        <option value="Apoio">Apoio 🤝</option>
-      </select>
-      <button class="confirmar">Confirmar ✔️</button>
-    `;
+        const nome = form.querySelector(".nome").value.trim();
+        const funcao = form.querySelector(".funcao").value;
 
-    titulo.onclick = () => {
-      form.classList.toggle("show");
-    };
+        if (!nome) return alert("Digite seu nome");
 
-    form.querySelector(".confirmar").onclick = async (e) => {
-      e.preventDefault();
+        const { data } = await supabase
+          .from("escala")
+          .select("*")
+          .eq("dia", dia)
+          .eq("evento", evento)
+          .eq("funcao", funcao);
 
-      const nomeInput = form.querySelector(".nome");
-      const funcaoSelect = form.querySelector(".funcao");
+        if (data.length >= LIMITES[funcao]) {
+          alert(`Limite de ${funcao} atingido`);
+          return;
+        }
 
-      const nome = nomeInput.value.trim();
-      const funcao = funcaoSelect.value;
+        await supabase.from("escala").insert({
+          dia,
+          evento,
+          nome,
+          funcao
+        });
 
-      if (!nome) return alert("Digite seu nome");
+        carregar(lista, dia, evento);
+        form.classList.remove("show");
+        form.querySelector(".nome").value = "";
+      };
 
-      const { data } = await supabase
-        .from("escala")
-        .select("*")
-        .eq("dia", dia)
-        .eq("evento", evento)
-        .eq("funcao", funcao);
-
-      if (data.length >= LIMITES[funcao]) {
-        alert(`Limite de ${funcao} atingido`);
-        return;
-      }
-
-      const jaExiste = data.find(d => d.nome === nome);
-      if (jaExiste) {
-        alert("Você já está inscrito nesse evento");
-        return;
-      }
-
-      await supabase.from("escala").insert({
-        dia,
-        evento,
-        nome,
-        funcao
-      });
+      container.appendChild(titulo);
+      container.appendChild(form);
+      container.appendChild(lista);
 
       carregar(lista, dia, evento);
 
-      form.classList.remove("show");
+      div.appendChild(container);
+    });
 
-      nomeInput.value = "";
-      funcaoSelect.selectedIndex = 0;
-    };
-
-    container.appendChild(titulo);
-    container.appendChild(form);
-    container.appendChild(lista);
-
-    carregar(lista, dia, evento);
-
-    div.appendChild(container);
-  });
-
-  app.appendChild(div);
+    app.appendChild(div);
+  }
 }
-
 
 async function carregar(el, dia, evento) {
   const { data } = await supabase
@@ -138,14 +119,9 @@ async function carregar(el, dia, evento) {
     `;
 
     div.querySelector(".remover").onclick = async () => {
-      const ok = confirm("Tem certeza que deseja sair deste evento?");
-      if (!ok) return;
+      if (!confirm("Tem certeza?")) return;
 
-      await supabase
-        .from("escala")
-        .delete()
-        .eq("id", item.id);
-
+      await supabase.from("escala").delete().eq("id", item.id);
       carregar(el, dia, evento);
     };
 
@@ -153,25 +129,4 @@ async function carregar(el, dia, evento) {
   });
 }
 
-
-let timeout;
-
-function atualizarComDelay() {
-  clearTimeout(timeout);
-  timeout = setTimeout(atualizarTudo, 200);
-}
-
-supabase
-  .channel("realtime-escala")
-  .on(
-    "postgres_changes",
-    {
-      event: "*",
-      schema: "public",
-      table: "escala"
-    },
-    () => {
-      atualizarComDelay();
-    }
-  )
-  .subscribe();
+carregarEventos();

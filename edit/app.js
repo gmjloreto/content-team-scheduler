@@ -6,12 +6,10 @@ const painelDiv = document.getElementById("painel");
 const btnLogin = document.getElementById("btnLogin");
 const btnCriar = document.getElementById("btnCriar");
 
-// 🔐 sessão
 const { data: { session } } = await supabase.auth.getSession();
 
 if (session) liberarPainel();
 
-// 🔥 LOGIN
 btnLogin.onclick = async () => {
   const email = document.getElementById("email").value;
   const senha = document.getElementById("senha").value;
@@ -29,19 +27,16 @@ btnLogin.onclick = async () => {
   liberarPainel();
 };
 
-// 🔓 liberar painel
 function liberarPainel() {
   loginDiv.style.display = "none";
   painelDiv.style.display = "block";
   carregar();
 }
 
-// 🧠 helper
 function formatarData(data) {
   return new Date(data + "T00:00:00").toLocaleDateString("pt-BR");
 }
 
-// 📦 carregar eventos
 async function carregar() {
   const { data } = await supabase
     .from("eventos")
@@ -64,19 +59,17 @@ async function carregar() {
     lista.appendChild(div);
   });
 }
-
-// ➕ criar evento
 const inputDia = document.getElementById("dia");
 
-  inputDia.addEventListener("input", (e) => {
-    let v = e.target.value.replace(/\D/g, "").slice(0, 8);
+inputDia.addEventListener("input", (e) => {
+  let v = e.target.value.replace(/\D/g, "").slice(0, 8);
 
-    if (v.length >= 5)
-      v = v.replace(/(\d{2})(\d{2})(\d+)/, "$1/$2/$3");
-    else if (v.length >= 3)
-      v = v.replace(/(\d{2})(\d+)/, "$1/$2");
+  if (v.length >= 5)
+    v = v.replace(/(\d{2})(\d{2})(\d+)/, "$1/$2/$3");
+  else if (v.length >= 3)
+    v = v.replace(/(\d{2})(\d+)/, "$1/$2");
 
-    e.target.value = v;
+  e.target.value = v;
 });
 
 function validarDataBR(data) {
@@ -99,15 +92,13 @@ function brToISO(data) {
 }
 
 btnCriar.onclick = async () => {
-const diaBR = document.getElementById("dia").value;
+  const diaBR = document.getElementById("dia").value;
 
   if (!validarDataBR(diaBR)) {
     return alert("Data inválida");
   }
 
-const dia = brToISO(diaBR);
-
-    if (!dia) return alert("Use formato DD/MM/AAAA");
+  const dia = brToISO(diaBR);
 
   const evento = document.getElementById("evento").value;
 
@@ -118,7 +109,6 @@ const dia = brToISO(diaBR);
   carregar();
 };
 
-// ❌ remover
 window.remover = async (id) => {
   const ok = confirm("Tem certeza?");
   if (!ok) return;
@@ -127,7 +117,6 @@ window.remover = async (id) => {
   carregar();
 };
 
-// 🔓 logout
 document.getElementById("logout").onclick = async () => {
   await supabase.auth.signOut();
   location.reload();

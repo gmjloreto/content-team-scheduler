@@ -9,8 +9,16 @@ const LIMITES = {
 
 const app = document.getElementById("app");
 
+function formatarDataBR(data) {
+  const [ano, mes, dia] = data.split("-");
+  return `${dia}/${mes}/${ano}`;
+}
+
 async function carregarEventos() {
-  const { data } = await supabase.from("eventos").select("*");
+  const { data } = await supabase
+    .from("eventos")
+    .select("*")
+    .order("dia", { ascending: true });
 
   const agrupado = {};
 
@@ -28,7 +36,9 @@ function render(eventos) {
   for (let dia in eventos) {
     const div = document.createElement("div");
     div.className = "day";
-    div.innerHTML = `<h3>${dia}</h3>`;
+
+    const dataBR = formatarDataBR(dia);
+    div.innerHTML = `<h3>${dataBR}</h3>`;
 
     eventos[dia].forEach(evento => {
       const container = document.createElement("div");

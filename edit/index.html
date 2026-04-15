@@ -25,11 +25,18 @@
 <div id="painel" style="display:none;">
   <h2>Painel de Eventos ⚙️</h2>
 
-  <input type="tell" id="dia" placeholder="DD/MM/AAAA"  maxlength="10">
-  <input id="evento" placeholder="Evento">
+  <input type="tell" id="dia" placeholder="Data do Evento (DD/MM/AAAA)" maxlength="10">
+  <input id="evento" placeholder="Nome do Evento (Ex: Missa das 19h)">
+  
+  <h3 class="admin-subtitle" style="margin-top:20px; border:none; font-size:11px;">Briefing de Mídia 🎨</h3>
+  <textarea id="descricao" placeholder="Ideia da arte / Briefing / Descrição" rows="3"></textarea>
+  <input type="tell" id="data_postagem" placeholder="Data sugerida para postagem (DD/MM/AAAA)" maxlength="10">
+  
   <button id="btnCriar">Criar Evento</button>
 
+  <h3 class="admin-subtitle">Eventos Cadastrados</h3>
   <div id="lista"></div>
+  <a href="../index.html" class="btn-publico">Ver Escala Pública 🌍</a>
   <button id="logout">Logout</button>
 </div>
 

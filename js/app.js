@@ -1,4 +1,6 @@
 import { supabase } from "../config/supabase.js";
+import { toast } from "./toast.js";
+import { dialog } from "./dialog.js";
 
 const LIMITES = {
   Editor: 1,
@@ -54,6 +56,7 @@ function configurarRealtime() {
 }
 
 async function carregarEventos() {
+  renderSkeletons();
   const { data, error } = await supabase
     .from("eventos")
     .select("*")
@@ -62,6 +65,21 @@ async function carregarEventos() {
   if (error) return;
 
   render(data);
+}
+
+function renderSkeletons() {
+  app.innerHTML = "";
+  for (let i = 0; i < 3; i++) {
+    const div = document.createElement("div");
+    div.className = "day";
+    div.innerHTML = `
+      <div class="skeleton skeleton-title"></div>
+      <div class="skeleton skeleton-button"></div>
+      <div class="skeleton skeleton-item"></div>
+      <div class="skeleton skeleton-item"></div>
+    `;
+    app.appendChild(div);
+  }
 }
 
 function render(eventos) {
@@ -120,16 +138,19 @@ function render(eventos) {
         e.preventDefault();
         const nome = form.querySelector(".nome").value.trim();
         const funcao = form.querySelector(".funcao").value;
-        if (!nome) return alert("Digite seu nome");
+        if (!nome) return toast.error("Digite seu nome");
 
         const { data: atuais } = await supabase.from("escala").select("*").eq("dia", ev.dia).eq("evento", ev.evento).eq("funcao", funcao);
-        if (atuais && atuais.length >= LIMITES[funcao]) return alert(`Limite de ${funcao} atingido!`);
+        if (atuais && atuais.length >= LIMITES[funcao]) return toast.error(`Limite de ${funcao} atingido!`);
 
         const { error } = await supabase.from("escala").insert({ dia: ev.dia, evento: ev.evento, nome, funcao });
         if (!error) {
+          toast.success("Inscrição realizada! 🎉");
           carregarEscalaNoEvento(container, ev.dia, ev.evento);
           form.classList.remove("show");
           form.querySelector(".nome").value = "";
+        } else {
+          toast.error("Erro ao se inscrever");
         }
       };
 
@@ -180,10 +201,12 @@ async function carregarEscalaNoEvento(container, dia, evento) {
         <button class="remover">❌</button>
       `;
       div.querySelector(".remover").onclick = async () => {
-        if (!confirm("Remover responsável pela arte?")) return;
+        const ok = await dialog.confirm("Deseja remover o responsável pela arte?");
+        if (!ok) return;
         div.classList.add("removing");
         setTimeout(async () => {
           await supabase.from("escala").delete().eq("id", item.id);
+          toast.success("Inscrição removida!");
           carregarEscalaNoEvento(container, dia, evento);
         }, 300);
       };
@@ -198,10 +221,12 @@ async function carregarEscalaNoEvento(container, dia, evento) {
         <button class="remover">❌</button>
       `;
       div.querySelector(".remover").onclick = async () => {
-        if (!confirm("Remover sua inscrição?")) return;
+        const ok = await dialog.confirm("Deseja remover sua inscrição?");
+        if (!ok) return;
         div.classList.add("removing");
         setTimeout(async () => {
           await supabase.from("escala").delete().eq("id", item.id);
+          toast.success("Inscrição removida!");
           carregarEscalaNoEvento(container, dia, evento);
         }, 300);
       };

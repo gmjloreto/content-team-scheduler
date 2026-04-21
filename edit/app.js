@@ -1,4 +1,6 @@
 import { supabase } from "../config/supabase.js";
+import { toast } from "../js/toast.js";
+import { dialog } from "../js/dialog.js";
 
 const loginDiv = document.getElementById("login");
 const painelDiv = document.getElementById("painel");
@@ -19,10 +21,11 @@ btnLogin.onclick = async () => {
   });
 
   if (error) {
-    alert("Login inválido: " + error.message);
+    toast.error("Login inválido: " + error.message);
     return;
   }
 
+  toast.success("Login realizado! 🔓");
   liberarPainel();
 };
 
@@ -110,9 +113,9 @@ btnCriar.onclick = async () => {
   const descricao = document.getElementById("descricao").value;
   const postagemBR = document.getElementById("data_postagem").value;
 
-  if (!validarDataBR(diaBR) || !diaBR) return alert("Data do evento inválida");
-  if (!validarDataBR(postagemBR)) return alert("Data de postagem inválida");
-  if (!evento) return alert("Preencha o nome do evento");
+  if (!validarDataBR(diaBR) || !diaBR) return toast.error("Data do evento inválida");
+  if (!validarDataBR(postagemBR)) return toast.error("Data de postagem inválida");
+  if (!evento) return toast.error("Preencha o nome do evento");
 
   const dia = brToISO(diaBR);
   const data_postagem = brToISO(postagemBR);
@@ -125,8 +128,9 @@ btnCriar.onclick = async () => {
   });
   
   if (error) {
-    alert("Erro ao criar evento: " + error.message);
+    toast.error("Erro ao criar evento: " + error.message);
   } else {
+    toast.success("Evento criado com sucesso! 📅");
     document.getElementById("dia").value = "";
     document.getElementById("evento").value = "";
     document.getElementById("descricao").value = "";
@@ -136,13 +140,14 @@ btnCriar.onclick = async () => {
 };
 
 window.remover = async (id) => {
-  const ok = confirm("Tem certeza?");
+  const ok = await dialog.confirm("Tem certeza que deseja excluir o evento?");
   if (!ok) return;
 
   const { error } = await supabase.from("eventos").delete().eq("id", id);
   if (error) {
-    alert("Erro ao remover: " + error.message);
+    toast.error("Erro ao remover: " + error.message);
   } else {
+    toast.success("Evento excluído!");
     carregar();
   }
 };

@@ -9,6 +9,12 @@
   <meta property="og:url" content="https://gmjloreto.github.io/content-team-scheduler/">
   <meta property="og:type" content="website">
 
+  <script>
+    if (window.location.pathname.endsWith('/edit')) {
+      window.location.replace(window.location.href + '/');
+    }
+  </script>
+
   <link rel="icon" href="../assets/icons/favicon_edit.svg" type="image/svg+xml">
   <title>Escala GMJ - Editor</title>
   <link rel="stylesheet" href="../css/style.css">
@@ -25,12 +31,12 @@
 <div id="painel" style="display:none;">
   <h2>Painel de Eventos ⚙️</h2>
 
-  <input type="tell" id="dia" placeholder="Data do Evento (DD/MM/AAAA)" maxlength="10">
+  <input type="tel" id="dia" placeholder="Data do Evento (DD/MM/AAAA)" maxlength="10">
   <input id="evento" placeholder="Nome do Evento (Ex: Missa das 19h)">
   
   <h3 class="admin-subtitle" style="margin-top:20px; border:none; font-size:11px;">Briefing de Mídia 🎨</h3>
   <textarea id="descricao" placeholder="Ideia da arte / Briefing / Descrição" rows="3"></textarea>
-  <input type="tell" id="data_postagem" placeholder="Data sugerida para postagem (DD/MM/AAAA)" maxlength="10">
+  <input type="tel" id="data_postagem" placeholder="Data sugerida para postagem (DD/MM/AAAA)" maxlength="10">
   
   <button id="btnCriar">Criar Evento</button>
 
@@ -40,6 +46,6 @@
   <button id="logout">Logout</button>
 </div>
 
-<script type="module" src="app.js"></script>
+<script type="module" src="./app.js"></script>
 </body>
 </html>

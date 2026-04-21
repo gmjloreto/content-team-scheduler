@@ -1,6 +1,16 @@
-const container = document.createElement('div');
-container.id = 'toast-container';
-document.body.appendChild(container);
+let container = null;
+
+function getContainer() {
+  if (!container) {
+    container = document.getElementById('toast-container');
+    if (!container) {
+      container = document.createElement('div');
+      container.id = 'toast-container';
+      document.body.appendChild(container);
+    }
+  }
+  return container;
+}
 
 export const toast = {
   show(message, type = 'info', duration = 3000) {
@@ -8,9 +18,10 @@ export const toast = {
     el.className = `toast ${type}`;
     el.textContent = message;
 
-    container.appendChild(el);
+    getContainer().appendChild(el);
 
     const hide = () => {
+      if (el.classList.contains('hiding')) return;
       el.classList.add('hiding');
       el.addEventListener('animationend', () => {
         el.remove();
@@ -18,7 +29,6 @@ export const toast = {
     };
 
     setTimeout(hide, duration);
-
     el.onclick = hide;
   },
   

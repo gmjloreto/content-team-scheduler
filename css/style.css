@@ -466,7 +466,6 @@ body.admin {
   }
 }
 
-/* Toast System */
 #toast-container {
   position: fixed;
   bottom: 24px;
@@ -513,7 +512,6 @@ body.admin {
   border-left: 4px solid #3498db;
 }
 
-/* Dialog System */
 .dialog-backdrop {
   position: fixed;
   top: 0;

@@ -146,7 +146,6 @@ function render(eventos) {
         const { error } = await supabase.from("escala").insert({ dia: ev.dia, evento: ev.evento, nome, funcao });
         if (!error) {
           toast.success("Inscrição realizada! 🎉");
-          carregarEscalaNoEvento(container, ev.dia, ev.evento);
           form.classList.remove("show");
           form.querySelector(".nome").value = "";
         } else {
@@ -203,12 +202,8 @@ async function carregarEscalaNoEvento(container, dia, evento) {
       div.querySelector(".remover").onclick = async () => {
         const ok = await dialog.confirm("Deseja remover o responsável pela arte?");
         if (!ok) return;
-        div.classList.add("removing");
-        setTimeout(async () => {
-          await supabase.from("escala").delete().eq("id", item.id);
-          toast.success("Inscrição removida!");
-          carregarEscalaNoEvento(container, dia, evento);
-        }, 300);
+        const { error } = await supabase.from("escala").delete().eq("id", item.id);
+        if (!error) toast.success("Inscrição removida!");
       };
       respEl.appendChild(div);
       temArte = true;
@@ -223,12 +218,8 @@ async function carregarEscalaNoEvento(container, dia, evento) {
       div.querySelector(".remover").onclick = async () => {
         const ok = await dialog.confirm("Deseja remover sua inscrição?");
         if (!ok) return;
-        div.classList.add("removing");
-        setTimeout(async () => {
-          await supabase.from("escala").delete().eq("id", item.id);
-          toast.success("Inscrição removida!");
-          carregarEscalaNoEvento(container, dia, evento);
-        }, 300);
+        const { error } = await supabase.from("escala").delete().eq("id", item.id);
+        if (!error) toast.success("Inscrição removida!");
       };
       listaEl.appendChild(div);
     }

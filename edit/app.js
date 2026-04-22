@@ -135,7 +135,6 @@ btnCriar.onclick = async () => {
     document.getElementById("evento").value = "";
     document.getElementById("descricao").value = "";
     document.getElementById("data_postagem").value = "";
-    carregar(); 
   }
 };
 
@@ -148,7 +147,6 @@ window.remover = async (id) => {
     toast.error("Erro ao remover: " + error.message);
   } else {
     toast.success("Evento excluído!");
-    carregar();
   }
 };
 
